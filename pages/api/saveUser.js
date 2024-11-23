@@ -1,3 +1,4 @@
+// pages/api/saveUser.js
 import connectMongo from "../../lib/mongodb";
 import User from "../../models/User";
 
@@ -6,12 +7,11 @@ export default async function handler(req, res) {
     try {
       await connectMongo();
 
-      const { userId, joinDate } = req.body;
+      const { userId } = req.body;
 
       // Create a new user object
       const user = new User({
         userId,
-        joinDate,
       });
 
       // Save the user to MongoDB

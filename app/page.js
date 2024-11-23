@@ -1,3 +1,4 @@
+// app/page.js (or pages/index.js for older versions)
 "use client";
 
 import { useEffect, useState } from "react";
@@ -5,6 +6,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [userData, setUserData] = useState(null);
 
+  // Apply dynamic styles for Telegram Web App viewport
   useEffect(() => {
     // Load Telegram WebApp script dynamically
     const script = document.createElement("script");
@@ -31,24 +33,31 @@ export default function Home() {
         if (user) {
           setUserData(user);
 
-          // Send user data to backend API to save it in MongoDB
-          fetch("/api/saveUserData", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId: user.id,
-              joinDate: user.join_date,
-            }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("User data saved:", data);
-            })
-            .catch((error) => {
+          // Send user data to the backend
+          const saveUserData = async () => {
+            try {
+              const res = await fetch("/api/saveUser", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  userId: user.id, // Only send the userId
+                }),
+              });
+
+              if (res.ok) {
+                const data = await res.json();
+                console.log("User data saved:", data);
+              } else {
+                console.error("Error saving user data");
+              }
+            } catch (error) {
               console.error("Error:", error);
-            });
+            }
+          };
+
+          saveUserData();
         }
       }
     };
