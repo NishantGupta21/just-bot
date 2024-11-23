@@ -1,6 +1,7 @@
 // app/page.js (or pages/index.js for older versions)
 "use client";
 
+import connectMongo from "@/lib/mongodb";
 import { useEffect, useState } from "react";
 
 export default function Home() {
