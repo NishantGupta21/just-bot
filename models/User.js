@@ -1,13 +1,21 @@
-// models/User.js
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const UserSchema = new mongoose.Schema(
   {
-    userId: { type: String, required: true, unique: true },
+    userId: {
+      type: String,
+      required: true,
+      unique: true, // Ensures userId is unique
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now, // Automatically sets the creation date
+    },
   },
-  { timestamps: true }
+  { collection: "users" } // Optional: specify the collection name
 );
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+// Check if the model is already compiled (to prevent overwriting)
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default User;
