@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [userData, setUserData] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -13,50 +13,10 @@ export default function Home() {
 
     script.onload = () => {
       if (window.Telegram?.WebApp) {
-        const webApp = window.Telegram.WebApp;
-
-        // Set viewport styles for better UI
-        document.body.style.setProperty(
-          "--tg-viewport-height",
-          `${webApp.viewportHeight}px`
-        );
-        document.body.style.setProperty(
-          "--tg-viewport-stable-height",
-          `${webApp.viewportStableHeight}px`
-        );
-
-        // Fetch user data from Telegram Web App
-        const user = webApp.initDataUnsafe?.user;
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
         if (user) {
-          setUserData(user);
-
-          // Send user data to the backend
-          const saveUserData = async () => {
-            try {
-              const res = await fetch("/api/saveUser", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  userId: user.id,
-                }),
-              });
-
-              if (res.ok) {
-                const data = await res.json();
-                console.log("User data saved:", data);
-              } else if (res.status === 409) {
-                console.log("User already exists, no action needed");
-              } else {
-                console.error("Error saving user data");
-              }
-            } catch (error) {
-              console.error("Error:", error);
-            }
-          };
-
-          saveUserData();
+          setUserId(user.id); // Set user ID from Telegram
+          saveUserData(user.id); // Save user ID to backend
         }
       }
     };
@@ -70,10 +30,36 @@ export default function Home() {
     };
   }, []);
 
+  // Function to save the user ID to the backend
+  const saveUserData = async (userId) => {
+    try {
+      const response = await fetch("/api/saveUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }), // Send userId to the backend
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("User saved:", data.message);
+      } else {
+        console.error("Failed to save user:", data.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <main>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      {userData && <p>Welcome, {userData.first_name}!</p>}
+      <h1 className="text-3xl font-bold underline">Telegram User ID</h1>
+      {userId ? (
+        <p>Your User ID: {userId}</p>
+      ) : (
+        <p>Loading user information...</p>
+      )}
     </main>
   );
 }
