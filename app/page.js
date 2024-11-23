@@ -6,25 +6,27 @@ export default function Home() {
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://telegram.org/js/telegram-web-app.js";
-    script.async = true;
-    document.body.appendChild(script);
+    // const script = document.createElement("script");
+    // script.src = "https://telegram.org/js/telegram-web-app.js";
+    // script.async = true;
+    // document.body.appendChild(script);
 
-    script.onload = () => {
-      const user = window.Telegram?.WebApp.initDataUnsafe?.user;
-      const userId = user?.id || 123; // Fallback user ID if not available
-      setUserId(userId);
-      saveUserData(userId);
-    };
+    // script.onload = () => {
+    //   const user = window.Telegram?.WebApp.initDataUnsafe?.user;
+    //   const userId = user?.id || 123; // Fallback user ID if not available
+    //   setUserId(userId);
+    //   saveUserData(userId);
+    // };
 
-    script.onerror = () => {
-      console.error("Failed to load Telegram Web App script.");
-    };
+    // script.onerror = () => {
+    //   console.error("Failed to load Telegram Web App script.");
+    // };
 
-    return () => {
-      document.body.removeChild(script);
-    };
+    // return () => {
+    //   document.body.removeChild(script);
+    // };
+    setUserId(123);
+    saveUserData(123);
   }, []);
 
   const saveUserData = async (userId) => {
