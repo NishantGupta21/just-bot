@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [userData, setUserData] = useState(null);
 
-  // Apply dynamic styles for Telegram Web App viewport
   useEffect(() => {
-    // Load Telegram WebApp script dynamically
     const script = document.createElement("script");
     script.src = "https://telegram.org/js/telegram-web-app.js";
     script.async = true;
@@ -17,7 +15,7 @@ export default function Home() {
       if (window.Telegram?.WebApp) {
         const webApp = window.Telegram.WebApp;
 
-        // Set viewport styles
+        // Set viewport styles for better UI
         document.body.style.setProperty(
           "--tg-viewport-height",
           `${webApp.viewportHeight}px`
@@ -27,7 +25,7 @@ export default function Home() {
           `${webApp.viewportStableHeight}px`
         );
 
-        // Fetch user data
+        // Fetch user data from Telegram Web App
         const user = webApp.initDataUnsafe?.user;
         if (user) {
           setUserData(user);
@@ -41,13 +39,15 @@ export default function Home() {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                  userId: user.id, // Only send the userId
+                  userId: user.id,
                 }),
               });
 
               if (res.ok) {
                 const data = await res.json();
                 console.log("User data saved:", data);
+              } else if (res.status === 409) {
+                console.log("User already exists, no action needed");
               } else {
                 console.error("Error saving user data");
               }
@@ -61,6 +61,10 @@ export default function Home() {
       }
     };
 
+    script.onerror = () => {
+      console.error("Failed to load Telegram Web App script.");
+    };
+
     return () => {
       document.body.removeChild(script);
     };
@@ -69,6 +73,7 @@ export default function Home() {
   return (
     <main>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      {userData && <p>Welcome, {userData.first_name}!</p>}
     </main>
   );
 }
