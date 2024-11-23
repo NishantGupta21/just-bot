@@ -40,10 +40,3 @@ export async function POST(req) {
     );
   }
 }
-
-export async function GET() {
-  return new Response(
-    JSON.stringify({ message: "Use POST to save user data." }),
-    { status: 405, headers: { "Content-Type": "application/json" } }
-  );
-}
