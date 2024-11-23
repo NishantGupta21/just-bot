@@ -19,6 +19,8 @@ export default function Home() {
           saveUserData(user.id); // Save user ID to backend
         } else {
           console.log("User ID not available.");
+          setUserId(123);
+          saveUserData(123);
         }
       }
     };
