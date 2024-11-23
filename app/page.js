@@ -1,7 +1,5 @@
-// app/page.js (or pages/index.js for older versions)
 "use client";
 
-import connectMongo from "@/lib/mongodb";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -70,18 +68,7 @@ export default function Home() {
 
   return (
     <main>
-      {userData ? (
-        <div>
-          <h1>Welcome to Telegram Mini App</h1>
-          <p>Username: {userData.username}</p>
-          <p>First Name: {userData.first_name}</p>
-          <p>Last Name: {userData.last_name}</p>
-          <p>Language Code: {userData.language_code}</p>
-          <p>Chat ID: {userData.id}</p>
-        </div>
-      ) : (
-        <div>Loading...</div>
-      )}
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
     </main>
   );
 }
