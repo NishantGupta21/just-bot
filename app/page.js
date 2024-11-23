@@ -17,6 +17,8 @@ export default function Home() {
         if (user) {
           setUserId(user.id); // Set user ID from Telegram
           saveUserData(user.id); // Save user ID to backend
+        } else {
+          console.log("User ID not available.");
         }
       }
     };
@@ -28,24 +30,27 @@ export default function Home() {
     return () => {
       document.body.removeChild(script);
     };
-  }, []);
+  }, []); // Empty dependency array ensures the effect only runs once on component mount
 
-  // Function to save the user ID to the backend
   const saveUserData = async (userId) => {
     try {
-      const response = await fetch("/api/saveUser", {
+      const res = await fetch("/api/saveUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId }), // Send userId to the backend
+        body: JSON.stringify({
+          userId,
+        }),
       });
 
-      const data = await response.json();
-      if (response.ok) {
-        console.log("User saved:", data.message);
+      if (res.ok) {
+        const data = await res.json();
+        console.log("User data saved:", data);
+      } else if (res.status === 409) {
+        console.log("User already exists, no action needed");
       } else {
-        console.error("Failed to save user:", data.message);
+        console.error("Error saving user data");
       }
     } catch (error) {
       console.error("Error:", error);
