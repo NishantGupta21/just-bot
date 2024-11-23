@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [userData, setUserData] = useState(null);
 
-  // Apply dynamic styles for Telegram Web App viewport
   useEffect(() => {
     // Load Telegram WebApp script dynamically
     const script = document.createElement("script");
@@ -31,6 +30,25 @@ export default function Home() {
         const user = webApp.initDataUnsafe?.user;
         if (user) {
           setUserData(user);
+
+          // Send user data to backend API to save it in MongoDB
+          fetch("/api/saveUserData", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: user.id,
+              joinDate: user.join_date,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("User data saved:", data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
         }
       }
     };
